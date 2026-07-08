@@ -183,12 +183,51 @@
     .result {
       flex: 1;
       min-height: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      overflow: hidden;
+      transition: opacity 220ms ease, transform 220ms ease;
+    }
+
+    .result-summary {
+      display: grid;
+      gap: 6px;
+      padding: 16px;
+      border: 1px solid var(--border-soft);
+      border-radius: 18px;
+      background: var(--surface-container);
+      animation: softSwap 320ms ease both;
+    }
+
+    .result-summary span {
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    .result-summary strong {
+      color: var(--primary);
+      font-size: 26px;
+      line-height: 1.12;
+      letter-spacing: 0;
+    }
+
+    .result-summary small {
+      color: var(--muted);
+      font-size: 13px;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .probability-list {
+      min-height: 0;
       display: grid;
       align-content: start;
       gap: 9px;
       overflow: auto;
       padding-right: 2px;
-      transition: opacity 220ms ease, transform 220ms ease;
     }
 
     .result-cover {
@@ -444,13 +483,22 @@
     }
 
     function renderSkeleton(rows = 6) {
-      resultsEl.innerHTML = Array.from({ length: rows }, () => `
-        <div class="skeleton-row">
-          <span class="skeleton skeleton-text"></span>
-          <span class="skeleton skeleton-bar"></span>
-          <span class="skeleton skeleton-num"></span>
+      resultsEl.innerHTML = `
+        <div class="result-summary">
+          <span>Prediccion</span>
+          <strong>Clasificando...</strong>
+          <small>Analizando la imagen</small>
         </div>
-      `).join('');
+        <div class="probability-list">
+          ${Array.from({ length: rows }, () => `
+            <div class="skeleton-row">
+              <span class="skeleton skeleton-text"></span>
+              <span class="skeleton skeleton-bar"></span>
+              <span class="skeleton skeleton-num"></span>
+            </div>
+          `).join('')}
+        </div>
+      `;
     }
 
     function renderCover() {
@@ -521,8 +569,9 @@
       const ranked = Array.from(predictions)
         .map((value, index) => ({ label: CLASSES[index], value }))
         .sort((a, b) => b.value - a.value);
+      const best = ranked[0];
 
-      resultsEl.innerHTML = ranked.map(item => {
+      const rows = ranked.map(item => {
         const percent = item.value * 100;
         return `
           <div class="prediction">
@@ -532,6 +581,17 @@
           </div>
         `;
       }).join('');
+
+      resultsEl.innerHTML = `
+        <div class="result-summary">
+          <span>Prediccion</span>
+          <strong>${best.label}</strong>
+          <small>${(best.value * 100).toFixed(1)}% de confianza</small>
+        </div>
+        <div class="probability-list">
+          ${rows}
+        </div>
+      `;
     }
 
     async function classify() {
@@ -558,7 +618,7 @@
       output.dispose();
 
       renderResults(predictions);
-      setStatus(`<strong>Prediccion: ${CLASSES[predictions.indexOf(Math.max(...predictions))]}</strong>`);
+      setStatus('Clasificacion lista.');
       classifyButton.disabled = false;
     }
 
