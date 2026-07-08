@@ -44,3 +44,7 @@ La aplicación está disponible en GitHub Pages:
 [https://jeffersonmejia.github.io/clasificador-ropa/](https://jeffersonmejia.github.io/clasificador-ropa/)
 
 ![App web funcionando con el modelo cargado](assets/imagen_prueba.jpeg)
+
+## 5. Ejecutar el cuaderno en Colab
+
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/13iyCaLQ6fTKT5UA4O42pPjJoMeG_YyFr?usp=sharing)
