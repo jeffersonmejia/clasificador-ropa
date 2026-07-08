@@ -36,3 +36,11 @@ Luego abrir:
 ```text
 http://localhost:8000
 ```
+
+## 4. App web publicada
+
+La aplicación está disponible en GitHub Pages:
+
+[https://jeffersonmejia.github.io/clasificador-ropa/](https://jeffersonmejia.github.io/clasificador-ropa/)
+
+![Captura de la app](assets/imagen_prueba.jpeg)
