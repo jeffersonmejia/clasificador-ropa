@@ -8,7 +8,14 @@ No requiere backend. El modelo se carga desde la carpeta local `tfjs_target_dir`
 
 ## 2. Dataset usado
 
-Se uso el dataset Fashion MNIST, que contiene imagenes en escala de grises de 10 tipos de prendas:
+Se uso Fashion MNIST, un dataset de imagenes de ropa en escala de grises.
+
+- Total: 70,000 imagenes.
+- Entrenamiento: 60,000 imagenes.
+- Prueba: 10,000 imagenes.
+- Tamano de cada imagen: 28 x 28 pixeles.
+- Clases: 10 tipos de prendas.
+- Distribucion: 7,000 imagenes por clase en total.
 
 `T-shirt/top`, `Trouser`, `Pullover`, `Dress`, `Coat`, `Sandal`, `Shirt`, `Sneaker`, `Bag`, `Ankle boot`.
 

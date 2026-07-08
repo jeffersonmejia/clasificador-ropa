@@ -17,12 +17,13 @@
       --surface: #fbfdf8;
       --surface-container: #eff6ee;
       --surface-container-high: #e7f0e6;
-      --outline: #c4d0c2;
+      --outline: #d8e4d6;
       --text: #172018;
       --muted: #4f5f52;
       --success: #1d7d47;
       --danger: #b3261e;
-      --shadow: 0 6px 18px rgba(28, 52, 35, 0.08);
+      --border-soft: #d7e5d6;
+      --canvas-border: #d1d5db;
       color: var(--text);
       background: #f2f8f1;
     }
@@ -33,7 +34,8 @@
 
     body {
       margin: 0;
-      min-height: 100vh;
+      height: 100vh;
+      overflow: hidden;
       display: grid;
       place-items: center;
       padding: 28px;
@@ -41,19 +43,20 @@
 
     main {
       width: min(1040px, 100%);
+      max-height: calc(100vh - 56px);
       display: grid;
-      grid-template-columns: minmax(320px, 380px) 1fr;
+      grid-template-columns: minmax(390px, 440px) 1fr;
       gap: 18px;
-      align-items: start;
+      align-items: stretch;
       animation: pageIn 520ms ease both;
     }
 
     section {
+      min-height: 0;
       background: color-mix(in srgb, var(--surface) 86%, white);
-      border: 1px solid var(--outline);
+      border: 1px solid var(--border-soft);
       border-radius: 28px;
       padding: 22px;
-      box-shadow: var(--shadow);
       overflow: hidden;
     }
 
@@ -90,23 +93,14 @@
       letter-spacing: 0;
     }
 
-    .canvas-shell {
-      display: grid;
-      place-items: center;
-      padding: 14px;
-      border-radius: 24px;
-      background: var(--surface-container);
-      border: 1px solid rgba(0, 109, 63, 0.12);
-    }
-
     canvas {
-      width: min(100%, 300px);
+      width: 100%;
       aspect-ratio: 1;
       height: auto;
       display: block;
-      border: 2px solid rgba(0, 33, 17, 0.88);
+      border: 1px solid var(--canvas-border);
       border-radius: 22px;
-      background: #000000;
+      background: #ffffff;
       cursor: crosshair;
       touch-action: none;
       transition: transform 180ms ease, border-color 180ms ease;
@@ -121,6 +115,7 @@
       display: flex;
       gap: 9px;
       flex-wrap: wrap;
+      justify-content: center;
     }
 
     button, label.file-button {
@@ -168,54 +163,57 @@
       min-height: 40px;
       display: flex;
       align-items: center;
+      justify-content: center;
       gap: 8px;
-      padding: 10px 12px;
-      border-radius: 16px;
-      background: rgba(168, 245, 200, 0.26);
+      padding: 0;
       color: var(--muted);
       font-size: 14px;
       line-height: 1.35;
+      text-align: center;
     }
 
     .result-panel {
-      min-height: 410px;
-      display: grid;
-      align-content: start;
+      min-height: 0;
+      max-height: 100%;
+      display: flex;
+      flex-direction: column;
       gap: 16px;
     }
 
-    .result-header {
-      display: flex;
-      justify-content: space-between;
-      gap: 14px;
-      align-items: center;
-    }
-
-    .status-chip {
-      display: inline-flex;
-      align-items: center;
-      min-height: 30px;
-      padding: 6px 12px;
-      border-radius: 999px;
-      background: var(--primary-container);
-      color: var(--on-primary-container);
-      font-size: 12px;
-      font-weight: 700;
-    }
-
-    .status-chip.ready {
-      background: var(--primary-container);
-      color: var(--on-primary-container);
-    }
-
-    .status-chip.error {
-      background: #ffdad6;
-      color: var(--danger);
-    }
-
     .result {
+      flex: 1;
+      min-height: 0;
       display: grid;
+      align-content: start;
       gap: 9px;
+      overflow: auto;
+      padding-right: 2px;
+      transition: opacity 220ms ease, transform 220ms ease;
+    }
+
+    .result-cover {
+      height: 100%;
+      min-height: 280px;
+      display: grid;
+      gap: 14px;
+      place-items: center;
+      padding: 18px;
+      text-align: center;
+      animation: softSwap 360ms ease both;
+    }
+
+    .result-cover img {
+      width: min(78%, 360px);
+      max-height: 310px;
+      object-fit: contain;
+      opacity: 0.92;
+    }
+
+    .empty-result-text {
+      margin: 0;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.4;
     }
 
     .prediction {
@@ -340,6 +338,17 @@
       }
     }
 
+    @keyframes softSwap {
+      from {
+        opacity: 0;
+        transform: translateY(8px) scale(0.99);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
     @keyframes fillBar {
       from { transform: scaleX(0); transform-origin: left; }
       to { transform: scaleX(1); transform-origin: left; }
@@ -355,12 +364,16 @@
 
     @media (max-width: 760px) {
       body {
+        height: auto;
+        min-height: 100vh;
+        overflow: auto;
         padding: 16px;
         place-items: start center;
       }
 
       main {
         grid-template-columns: 1fr;
+        align-items: start;
       }
 
       section {
@@ -377,6 +390,10 @@
         gap: 9px;
         font-size: 13px;
       }
+
+      .result-panel {
+        min-height: 360px;
+      }
     }
   </style>
 </head>
@@ -387,9 +404,7 @@
         <p class="eyebrow">Fashion MNIST</p>
         <h1>Clasificador de ropa</h1>
       </div>
-      <div class="canvas-shell">
-        <canvas id="drawCanvas" width="280" height="280"></canvas>
-      </div>
+      <canvas id="drawCanvas" width="280" height="280"></canvas>
       <div class="tools">
         <button id="classifyButton" class="primary" disabled>Clasificar</button>
         <button id="clearButton" class="secondary">Limpiar</button>
@@ -400,18 +415,15 @@
     </section>
 
     <section class="result-panel">
-      <div class="result-header">
-        <h2>Resultado</h2>
-        <span id="modelChip" class="status-chip">Cargando</span>
-      </div>
+      <h2>Resultado</h2>
       <div id="results" class="result"></div>
     </section>
   </main>
 
   <script>
     const CLASSES = [
-      'T-shirt/top', 'Trouser', 'Pullover', 'Dress', 'Coat',
-      'Sandal', 'Shirt', 'Sneaker', 'Bag', 'Ankle boot'
+      'Camiseta/top', 'Pantalon', 'Sueter', 'Vestido', 'Abrigo',
+      'Sandalia', 'Camisa', 'Tenis', 'Bolso', 'Botin'
     ];
 
     const MODEL_URL = './tfjs_target_dir/model.json';
@@ -422,7 +434,6 @@
     const imageInput = document.getElementById('imageInput');
     const statusEl = document.getElementById('status');
     const resultsEl = document.getElementById('results');
-    const modelChip = document.getElementById('modelChip');
 
     let model = null;
     let drawing = false;
@@ -430,11 +441,6 @@
 
     function setStatus(text, loading = false) {
       statusEl.innerHTML = loading ? `<span class="spinner"></span>${text}` : text;
-    }
-
-    function setModelChip(text, state = '') {
-      modelChip.textContent = text;
-      modelChip.className = `status-chip ${state}`.trim();
     }
 
     function renderSkeleton(rows = 6) {
@@ -447,11 +453,20 @@
       `).join('');
     }
 
+    function renderCover() {
+      resultsEl.innerHTML = `
+        <div class="result-cover">
+          <img src="./assets/cover.svg" alt="">
+          <p class="empty-result-text">Sin resultados. Sube una imagen o dibujala pa empezar.</p>
+        </div>
+      `;
+    }
+
     function clearCanvas() {
-      ctx.fillStyle = '#000000';
+      ctx.fillStyle = '#ffffff';
       ctx.fillRect(0, 0, canvas.width, canvas.height);
       hasDrawing = false;
-      resultsEl.innerHTML = '';
+      renderCover();
       setStatus(model ? 'Dibuja o sube una imagen.' : 'Cargando modelo...', !model);
     }
 
@@ -488,8 +503,8 @@
 
     function prepareCanvas() {
       clearCanvas();
-      ctx.strokeStyle = '#ffffff';
-      ctx.lineWidth = 18;
+      ctx.strokeStyle = '#111111';
+      ctx.lineWidth = 10;
       ctx.lineCap = 'round';
       ctx.lineJoin = 'round';
     }
@@ -498,7 +513,7 @@
       return tf.tidy(() => {
         const image = tf.browser.fromPixels(canvas, 1);
         const resized = tf.image.resizeBilinear(image, [28, 28]);
-        return resized.toFloat().div(255).reshape([1, 28, 28, 1]);
+        return tf.sub(1, resized.toFloat().div(255)).reshape([1, 28, 28, 1]);
       });
     }
 
@@ -543,7 +558,7 @@
       output.dispose();
 
       renderResults(predictions);
-      setStatus(`Prediccion: ${CLASSES[predictions.indexOf(Math.max(...predictions))]}`);
+      setStatus(`<strong>Prediccion: ${CLASSES[predictions.indexOf(Math.max(...predictions))]}</strong>`);
       classifyButton.disabled = false;
     }
 
@@ -580,7 +595,6 @@
     async function init() {
       prepareCanvas();
       renderSkeleton();
-      setModelChip('Cargando');
 
       try {
         if (!window.tf) {
@@ -589,12 +603,10 @@
 
         model = await tf.loadLayersModel(MODEL_URL);
         classifyButton.disabled = false;
-        setModelChip('Listo', 'ready');
-        resultsEl.innerHTML = '';
+        renderCover();
         setStatus('Modelo cargado. Dibuja o sube una imagen.');
       } catch (error) {
         resultsEl.innerHTML = '';
-        setModelChip('Error', 'error');
         setStatus(`No se pudo cargar el modelo: ${error.message}`);
         console.error(error);
       }
