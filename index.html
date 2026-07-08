@@ -43,7 +43,7 @@
 
     main {
       width: min(1040px, 100%);
-      max-height: calc(100vh - 56px);
+      height: calc(100vh - 56px);
       display: grid;
       grid-template-columns: minmax(390px, 440px) 1fr;
       gap: 18px;
@@ -51,14 +51,14 @@
       animation: pageIn 520ms ease both;
     }
 
-    section {
-      min-height: 0;
-      background: color-mix(in srgb, var(--surface) 86%, white);
-      border: 1px solid var(--border-soft);
-      border-radius: 28px;
-      padding: 22px;
-      overflow: hidden;
-    }
+      section {
+        min-height: 0;
+        background: color-mix(in srgb, var(--surface) 86%, white);
+        border: 1px solid var(--border-soft);
+        border-radius: 28px;
+        padding: 22px;
+        overflow: hidden;
+      }
 
     .input-panel {
       display: grid;
@@ -432,6 +432,10 @@
 
       .result-panel {
         min-height: 360px;
+      }
+
+      main {
+        height: auto;
       }
     }
   </style>
